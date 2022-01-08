@@ -801,3 +801,30 @@ header {
     padding-left: 0;
   }
 }
+
+.notab {
+  background-image: url('img/bg-notab.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(
+    (100vw - var(--wrapper-min-width)) / (var(--wrapper-max-width-number) - var(--wrapper-min-width-number)) *
+      (1106 - 300) + 300px
+  );
+}
+
+.notab img {
+  height: calc(
+    (100vw - var(--wrapper-min-width)) / (var(--wrapper-max-width-number) - var(--wrapper-min-width-number)) *
+      (428 - 100) + 100px
+  );
+}
+
+@media (max-width: 500px) {
+  .notab {
+    display: none;
+  }
+}
