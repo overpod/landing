@@ -47,6 +47,7 @@ class Slider {
     this.thumbs[this.current].classList.add('nav-control_active');
 
     this._bindEvents();
+    setInterval(() => this.goNext(), 3000);
   }
 
   goTo(index, dir) {

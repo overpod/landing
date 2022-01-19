@@ -737,7 +737,7 @@ header {
   );
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1000px) {
   .qrcode {
     background-image: url('img/qrcode.png');
   }
