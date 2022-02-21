@@ -1,30 +1,3 @@
-const animationOptions = {
-  duration: 700,
-  fill: 'both',
-  easing: 'cubic-bezier(0.82, 0.04, 0.33, 0.98)',
-};
-
-const showKeyframes = (dir) => {
-  return [100 * dir, 0].map((t) => ({ transform: `translateX(${t}%)` }));
-};
-
-const hideKeyframes = (dir) => {
-  return [0, -100 * dir].map((t) => ({ transform: `translateX(${t}%)` }));
-};
-
-const slideAnimation = (options) => (keyframes) => (element, callback) => {
-  const animation = element.animate(keyframes, options);
-  const handler = () => {
-    callback = callback || function () {};
-    callback.call(this);
-    animation.removeEventListener('finish', handler);
-  };
-  animation.addEventListener('finish', handler, { once: true });
-};
-const actionSlide = slideAnimation(animationOptions);
-const showSlide = (dir) => actionSlide(showKeyframes(dir));
-const hideSlide = (dir) => actionSlide(hideKeyframes(dir));
-
 class Slider {
   constructor(props) {
     this.rootElement = props.element;
@@ -58,18 +31,37 @@ class Slider {
 
     self.isAnimating = true;
     self.current = index;
-    nextSlide.classList.add('slider-list__item_active');
 
-    showSlide(dir)(nextSlide, () => {});
-
-    hideSlide(dir)(prevSlide, function () {
-      self.isAnimating = false;
+    const changeNextFrame = () => {
+      nextSlide.classList.add('slider-list__item_active');
       prevSlide.classList.remove('slider-list__item_active');
       self.thumbs.forEach((item, index) => {
         const action = index === self.current ? 'add' : 'remove';
         item.classList[action]('nav-control_active');
       });
-    });
+      prevSlide.style.left = null;
+      nextSlide.style.opacity = null;
+      self.isAnimating = false;
+    };
+
+    const showNextSlide = () => {
+      const timeout = 1;
+      let i = dir ? 0 : 100;
+      nextSlide.style.opacity = 1;
+      nextSlide.style.left = dir === 1 ? '100%' : '-100%';
+      setTimeout(function run() {
+        i = dir === 1 ? (i = i - 1) : (i = i + 1);
+        if (i < -100 || i > 100) {
+          changeNextFrame();
+          return;
+        }
+        prevSlide.style.left = `${i}%`;
+        nextSlide.style.left = `${dir === 1 ? 100 + i : -100 + i}%`;
+        setTimeout(run, timeout);
+      }, timeout);
+    };
+
+    showNextSlide();
   }
 
   goStep(dir) {
